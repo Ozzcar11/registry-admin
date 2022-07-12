@@ -42,11 +42,10 @@ export default {
   actions: {
     async logIn ({ commit, dispatch }, payload) {
       const response = await api.auth.login(payload)
-      console.log(response)
       if (response.status === 200) {
         commit('setRefreshToken', response.data.refresh)
         commit('setAccessToken', response.data.access)
-        dispatch('fetchUser')
+        await dispatch('fetchUser')
         router.push('/')
       }
     },

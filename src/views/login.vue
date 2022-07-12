@@ -52,7 +52,6 @@ export default {
       try {
         await this.$store.dispatch('auth/logIn', this.form)
       } catch (e) {
-        console.log(e)
         if (e.request.status === 401) {
           this.notAuth = true
         }
