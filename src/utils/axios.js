@@ -3,7 +3,7 @@ import store from '../store'
 import router from '../router'
 
 const axiosInstance = axios.create({
-  baseURL: 'http://192.168.0.108:8003/api/v1.0.0',
+  baseURL: 'http://10.11.58.67:8003/api/v1.0.0',
   timeout: 10000
 })
 

@@ -4,7 +4,12 @@
       <h3>№{{ requestData.id }} {{ requestData.companyName }}</h3>
 
       <div class="request-info">
-        <h3>Основные данные о предприятии</h3>
+        <div class="request-container">
+          <h3>Основные данные о предприятии</h3>
+          <div class="request-avatar">
+            <img :src="$options.MAIN_URL + requestData.imageOrganization">
+          </div>
+        </div>
         <div class="request-info__grid">
           <AppInfo
             v-for="(item, index) of baseDataOptions"
@@ -116,6 +121,7 @@ export default {
     BaseCheckbox,
     AppInfo
   },
+  MAIN_URL: 'http://10.11.58.67:8003/media/',
   data () {
     return {
       requestData: {
@@ -137,7 +143,8 @@ export default {
         fio: '',
         number: '',
         email: '',
-        login: ''
+        login: '',
+        imageOrganization: ''
       },
       newRejectReason: ''
     }
@@ -208,28 +215,11 @@ export default {
       this.requestData.login = data.login
       this.requestData.isRejected = data.is_rejected
       this.requestData.reason = data.rejection_cause
+      this.requestData.imageOrganization = data.image_organization
     },
     async onConfirm () {
       try {
         await this.$api.requests.confirm(this.$route.params.id)
-        /*
-        await this.$api.requests.confirm({
-          name: this.requestData.companyName,
-          address: this.requestData.address,
-          coordinates: this.requestData.coordinates,
-          INN: this.requestData.inn,
-          employees: this.requestData.totalEmployees,
-          responsible: this.requestData.fio,
-          telephone: this.requestData.number,
-          email: this.requestData.email,
-          login: this.requestData.login,
-          is_backbone: this.requestData.isBackbone,
-          is_military_industrial: this.requestData.isMilitaryIndustrial,
-          organization_form: this.requestData.organizationalLegalForm,
-          municipal: this.requestData.municipality,
-          industry: this.requestData.industry,
-          activity: this.requestData.listOfActivity
-        }) */
         this.$router.push('/')
       } catch (e) {
         console.log(e)
@@ -249,6 +239,10 @@ export default {
 
 <style lang="scss" scoped>
 .request {
+  &-container {
+    display: flex;
+    justify-content: space-between;
+  }
   &-info {
     margin-top: 60px;
     padding: 40px;
@@ -285,7 +279,8 @@ export default {
     font-size: 30px;
     text-align: center;
   }
-  &__subtitle {font-weight: 500;
+  &__subtitle {
+    font-weight: 500;
     font-size: 30px;
     text-align: center;
     margin-top: 57px;
