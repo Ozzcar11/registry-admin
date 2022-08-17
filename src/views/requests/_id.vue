@@ -5,10 +5,14 @@
 
       <div class="request-info">
         <div class="request-container">
-          <h3>Основные данные о предприятии</h3>
           <div class="request-avatar">
-            <img :src="$options.MAIN_URL + requestData.imageOrganization">
+            <img
+              v-if="requestData.imageOrganization"
+              :src="$options.MAIN_URL + requestData.imageOrganization"
+            />
+            <div class="request-avatar__text" v-else>Фото отсутствует</div>
           </div>
+          <h3>Основные данные о предприятии</h3>
         </div>
         <div class="request-info__grid">
           <AppInfo
@@ -32,13 +36,8 @@
           </div>
         </div>
 
-        <h3 class="request-info__title2">
-          Контактная информация предприятия
-        </h3>
-        <div
-          class="request-info__grid"
-          style="margin-bottom: 40px;"
-        >
+        <h3 class="request-info__title2">Контактная информация предприятия</h3>
+        <div class="request-info__grid" style="margin-bottom: 40px">
           <AppInfo
             v-for="(item, index) of contactDataOptions"
             :key="index"
@@ -52,15 +51,8 @@
           {{ requestData.reason }}
         </AlertError>
 
-        <div
-          v-else
-          class="panel"
-        >
-          <BaseButton
-            square
-            theme="success"
-            @click="onConfirm"
-          >
+        <div v-else class="panel">
+          <BaseButton square theme="success" @click="onConfirm">
             Подтвердить
           </BaseButton>
           <BaseButton
@@ -75,9 +67,7 @@
       </div>
     </section>
 
-    <AppModal
-      ref="reject-modal"
-    >
+    <AppModal ref="reject-modal">
       <div class="reject-modal">
         <p class="reject-modal__title">№855236 АО “Электросвязь”</p>
         <p class="reject-modal__subtitle">Введите причину отказа:</p>
@@ -89,11 +79,7 @@
             class="reject-modal__textarea"
           />
           <div class="reject-modal__btn-wrapper">
-            <BaseButton
-              square
-              theme="danger"
-              class="reject-modal__btn"
-            >
+            <BaseButton square theme="danger" class="reject-modal__btn">
               Отклонить
             </BaseButton>
           </div>
@@ -122,7 +108,7 @@ export default {
     AppInfo
   },
   MAIN_URL: 'http://10.11.58.67:8003/media/',
-  data () {
+  data() {
     return {
       requestData: {
         id: '',
@@ -150,7 +136,7 @@ export default {
     }
   },
   computed: {
-    baseDataOptions () {
+    baseDataOptions() {
       const {
         organizationalLegalForm,
         companyName,
@@ -163,7 +149,10 @@ export default {
       } = this.requestData
 
       return [
-        { label: 'Организационно-правовая форма', value: organizationalLegalForm },
+        {
+          label: 'Организационно-правовая форма',
+          value: organizationalLegalForm
+        },
         { label: 'Название предприятия', value: companyName },
         { label: 'Адрес', value: address },
         { label: 'ИНН ', value: inn },
@@ -173,13 +162,8 @@ export default {
         { label: 'Общая численность сотрудников', value: totalEmployees }
       ]
     },
-    contactDataOptions () {
-      const {
-        fio,
-        number,
-        email,
-        login
-      } = this.requestData
+    contactDataOptions() {
+      const { fio, number, email, login } = this.requestData
 
       return [
         { label: 'ФИО ответственного', value: fio },
@@ -189,11 +173,11 @@ export default {
       ]
     }
   },
-  created () {
+  created() {
     this.fetchData()
   },
   methods: {
-    async fetchData () {
+    async fetchData() {
       const res = await this.$api.requests.one(this.$route.params.id)
       const data = res.data
       this.requestData.id = data.id
@@ -217,7 +201,7 @@ export default {
       this.requestData.reason = data.rejection_cause
       this.requestData.imageOrganization = data.image_organization
     },
-    async onConfirm () {
+    async onConfirm() {
       try {
         await this.$api.requests.confirm(this.$route.params.id)
         this.$router.push('/')
@@ -225,9 +209,12 @@ export default {
         console.log(e)
       }
     },
-    async onReject () {
+    async onReject() {
       try {
-        await this.$api.requests.reject(this.$route.params.id, this.newRejectReason)
+        await this.$api.requests.reject(
+          this.$route.params.id,
+          this.newRejectReason
+        )
         this.$router.push('/')
       } catch (e) {
         console.log(e)
@@ -241,16 +228,33 @@ export default {
 .request {
   &-container {
     display: flex;
-    justify-content: space-between;
+    align-items: center;
+    h3 {
+      margin-left: 30px;
+    }
+  }
+  &-avatar {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: rgb(245, 245, 245);
+    overflow: hidden;
+    &__text {
+      text-align: center;
+      padding-top: 27px;
+    }
+    img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   }
   &-info {
     margin-top: 60px;
     padding: 40px;
     background: #fff;
-
-    h3 {
-      margin-bottom: 30px;
-    }
 
     &__title2 {
       margin-top: 60px;
@@ -261,6 +265,7 @@ export default {
       grid-template-columns: 1fr 1fr;
       grid-column-gap: 50px;
       grid-row-gap: 30px;
+      margin-top: 30px;
     }
   }
 

@@ -4,7 +4,16 @@
       <h3>№{{ requestData.id }} {{ requestData.companyName }}</h3>
 
       <div class="company-info">
-        <h3>Основные данные о предприятии</h3>
+        <div class="company-container">
+          <div class="company-avatar">
+            <img
+              v-if="requestData.imageOrganization"
+              :src="$options.MAIN_URL + requestData.imageOrganization"
+            />
+            <div class="company-avatar__text" v-else>Фото отсутствует</div>
+          </div>
+          <h3>Основные данные о предприятии</h3>
+        </div>
         <div class="company-info__grid">
           <AppInfo
             v-for="(item, index) of baseDataOptions"
@@ -27,13 +36,8 @@
           </div>
         </div>
 
-        <h3 class="company-info__title2">
-          Контактная информация предприятия
-        </h3>
-        <div
-          class="company-info__grid"
-          style="margin-bottom: 40px;"
-        >
+        <h3 class="company-info__title2">Контактная информация предприятия</h3>
+        <div class="company-info__grid" style="margin-bottom: 40px">
           <AppInfo
             v-for="(item, index) of contactDataOptions"
             :key="index"
@@ -57,7 +61,8 @@ export default {
     AppInfo,
     BaseCheckbox
   },
-  data () {
+  MAIN_URL: 'http://10.11.58.67:8003/media/',
+  data() {
     return {
       requestData: {
         id: '',
@@ -76,13 +81,14 @@ export default {
         fio: '',
         number: '',
         email: '',
-        login: ''
+        login: '',
+        imageOrganization: ''
       },
       newRejectReason: ''
     }
   },
   computed: {
-    baseDataOptions () {
+    baseDataOptions() {
       const {
         organizationalLegalForm,
         companyName,
@@ -95,7 +101,10 @@ export default {
       } = this.requestData
 
       return [
-        { label: 'Организационно-правовая форма', value: organizationalLegalForm },
+        {
+          label: 'Организационно-правовая форма',
+          value: organizationalLegalForm
+        },
         { label: 'Название предприятия', value: companyName },
         { label: 'Адрес', value: address },
         { label: 'ИНН ', value: inn },
@@ -105,13 +114,8 @@ export default {
         { label: 'Общая численность сотрудников', value: totalEmployees }
       ]
     },
-    contactDataOptions () {
-      const {
-        fio,
-        number,
-        email,
-        login
-      } = this.requestData
+    contactDataOptions() {
+      const { fio, number, email, login } = this.requestData
 
       return [
         { label: 'ФИО ответственного', value: fio },
@@ -121,12 +125,14 @@ export default {
       ]
     }
   },
-  async created () {
+  async created() {
     await this.fetchInfo()
   },
   methods: {
-    async fetchInfo () {
-      const res = await this.$api.requests.acceptedCompany(this.$route.params.id)
+    async fetchInfo() {
+      const res = await this.$api.requests.acceptedCompany(
+        this.$route.params.id
+      )
       const data = res.data
 
       this.requestData.id = data.id
@@ -146,6 +152,7 @@ export default {
       this.requestData.login = data.login
       this.requestData.isRejected = data.is_rejected
       this.requestData.reason = data.rejection_cause
+      this.requestData.imageOrganization = data.image_organization
     }
   }
 }
@@ -153,14 +160,35 @@ export default {
 
 <style lang="scss" scoped>
 .company {
+  &-container {
+    display: flex;
+    align-items: center;
+    h3 {
+      margin-left: 30px;
+    }
+  }
+  &-avatar {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: rgb(245, 245, 245);
+    overflow: hidden;
+    &__text {
+      text-align: center;
+      padding-top: 27px;
+    }
+    img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
   &-info {
     margin-top: 60px;
     padding: 40px;
     background: #fff;
-
-    h3 {
-      margin-bottom: 30px;
-    }
 
     &__title2 {
       margin-top: 60px;
@@ -171,6 +199,7 @@ export default {
       grid-template-columns: 1fr 1fr;
       grid-column-gap: 50px;
       grid-row-gap: 30px;
+      margin-top: 30px;
     }
   }
 }

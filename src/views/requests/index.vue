@@ -3,18 +3,11 @@
     <section class="requests">
       <h3>Заявки на регистрацию</h3>
 
-      <BaseButton
-        href="/rejected"
-        class="requests__btn"
-      >
+      <BaseButton href="/rejected" class="requests__btn">
         Отклоненные заявки
       </BaseButton>
 
-      <AppTable
-        :fields="fields"
-        :items="tableData"
-        class="requests__table"
-      >
+      <AppTable :fields="fields" :items="tableData" class="requests__table">
         <template #statement="{ id }">
           <a :href="'/requests/' + id">Открыть</a>
         </template>
@@ -33,7 +26,7 @@ export default {
     AppTable,
     BaseButton
   },
-  data () {
+  data() {
     return {
       fields: [
         { key: 'number', label: 'Номер заявки' },
@@ -45,15 +38,15 @@ export default {
       tableData: []
     }
   },
-  async created () {
+  async created() {
     await this.fetchRequests()
   },
   methods: {
-    async fetchRequests () {
+    async fetchRequests() {
       try {
         const res = await this.$api.requests.list()
         const apps = res.data ?? []
-        this.tableData = apps.map(item => ({
+        this.tableData = apps.map((item) => ({
           id: item.id,
           number: item.id,
           company: item.name,

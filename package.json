@@ -49,7 +49,8 @@
       "parser": "babel-eslint"
     },
     "rules": {
-      "no-debugger": "off"
+      "no-debugger": "off",
+      "space-before-function-paren": "off"
     }
   },
   "browserslist": [

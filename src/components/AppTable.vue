@@ -2,39 +2,25 @@
   <table class="table">
     <thead class="header">
       <tr class="row">
-        <th
-          v-for="field of fields"
-          :key="field.key"
-          class="cell"
-        >
+        <th v-for="field of fields" :key="field.key" class="cell">
           <div class="content">
-              <span>
-                {{ field.label }}
-              </span>
+            <span>
+              {{ field.label }}
+            </span>
           </div>
         </th>
       </tr>
     </thead>
 
     <tbody>
-    <tr
-      v-for="(item, index) of items"
-      :key="index"
-    >
-      <td
-        v-for="(field, index) of fields"
-        :key="index"
-      >
-        <slot
-          v-if="field.slot"
-          :name="field.key"
-          v-bind="item"
-        />
-        <template v-else>
-          {{ item[field.key] }}
-        </template>
-      </td>
-    </tr>
+      <tr v-for="(item, index) of items" :key="index">
+        <td v-for="(field, index) of fields" :key="index">
+          <slot v-if="field.slot" :name="field.key" v-bind="item" />
+          <template v-else>
+            {{ item[field.key] }}
+          </template>
+        </td>
+      </tr>
     </tbody>
   </table>
 </template>
@@ -61,7 +47,7 @@ table {
   width: 100%;
 
   .header {
-    background: #EAEAEA;
+    background: #eaeaea;
 
     .row {
       .cell {
@@ -71,7 +57,8 @@ table {
     }
   }
   tr {
-    td, th {
+    td,
+    th {
       padding: 14px 22px;
       font-size: 14px;
     }
